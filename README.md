@@ -1,2 +1,2 @@
-# Hidato
- Segundo Proyecto de Programación Declarativa
+# Sudoku Hidato
+ Second Project - Declarative Programming 
