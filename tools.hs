@@ -34,7 +34,11 @@ getAdjacencyList board cell = do
     let directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
     let movements = map (\x -> (fst initialPosition + fst x, snd initialPosition + snd x)) directions 
     let validMovements = filter (\x -> isValidMovement board cell x) movements
-    head (return validMovements)
+    let succesor = filter (\x -> (board !! fst x !! snd x) > 0) validMovements
+    if length succesor > 0
+       then head (return succesor)
+    else
+        head (return validMovements)
 
 
 getIndexList::[Int] -> Int -> Int -> Int
@@ -49,7 +53,7 @@ getIndexMatrix (x:xs) n index | pos >= 0 = (index , pos)
 
 
 
-list = [[0, 0], [3, 1]]
+list = [[0, 0], [2, 1]]
 
     
 main = do
