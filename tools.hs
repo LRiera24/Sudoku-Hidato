@@ -58,12 +58,12 @@ getIndexMatrix [] _ _ = (-1,-1)
 getIndexMatrix (x:xs) n index | pos >= 0 = (index , pos)
                                 | otherwise =  getIndexMatrix xs n (index + 1)  where pos = getIndexList x n 0
 
-solve :: [[Int]] -> Int -> Int -> [[Int]]
+solve :: [[Int]] -> Int -> Int -> [[[Int]]]
 solve m max cell = do
     let adj = getAdjacencyList m cell
     if length adj == 0
         then  if cell == max 
-            then m
+            then [m]
             else []
     else
         if m !! (fst(adj !! 0)) !! (snd (adj !! 0)) == cell + 1
@@ -79,6 +79,33 @@ solve m max cell = do
                 ]
 
 
+while pos len result m max adj cell= do
+    if pos == len || result /= []
+        then result
+    else do
+        let x = adj !! pos
+        let m2 = replaceMatrix m (fst x) (snd x) (cell + 1)
+        while (pos + 1) len (solve_once m2 max (cell + 1)) m max adj cell
+    
+
+
+solve_once :: [[Int]] -> Int -> Int -> [[Int]]
+solve_once m max cell = do
+    let adj = getAdjacencyList m cell
+    if length adj == 0
+        then  if cell == max 
+            then m
+            else []
+    else
+        if m !! (fst(adj !! 0)) !! (snd (adj !! 0)) == cell + 1
+            then solve_once m max (cell + 1)
+        else
+            if getIndexMatrix m (cell + 1) 0  /= (-1,-1)
+                then []
+            else do
+                let len = length adj
+                while 0 len [] m max adj cell
+
 
 proof = do
   let askName i = do
@@ -90,13 +117,40 @@ proof = do
 
 
 
-matrix = [[0, 3, 2],
-          [0, 8, 1],
-          [7, 0, 9]]
+-- matrix = [[0, 3, 0],
+--           [0, 8, 1],
+--           [7, 0, 9]]
+-- matrix = [[15, 16, 0, 3],
+--           [14, 1, 2, 5],
+--           [0, 13, 0, 0],
+--           [12, 0, 8, 7]]
+matrix = [[0, 0, 19, 0, 5],
+          [0, 18, 25, 6, 0],
+          [0, 23, 0, 0, 0],
+          [0, 13, 1, 0, 8],
+          [0, 14, 0, 11, 9]]
+-- matrix = [[0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 1, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0]]
+-- matrix = [[0, 25, 0, 0, 3, 0, 6, 0],
+--           [23, 0, 21, 0, 0, 0, 0, 0],
+--           [38, 0, 29, 0, 31, 11, 1, 9],
+--           [0, 39, 35, 30, 19, 32, 0, 14],
+--           [49, 0, 0, 34, 0, 18, 15, 0],
+--           [0, 48, 52, 41, 0, -1, 0, 16],
+--           [47, 45, 0, 53, 63, 55, 56, 0],
+--           [0, 44, 43, 0, 61, 60, 59, 58]]
+
 list = [0, 0, 2, 1]
 
 
-main = print(solve matrix 9 1)
+-- main = print(solve_once matrix 64 1)
+main = print(solve_once matrix 25 1)
 -- main = print(replaceMatrix matrix 1 0 7)
 -- main = print(replace list 2 7)
 -- main = proof
