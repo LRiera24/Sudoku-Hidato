@@ -4,11 +4,14 @@
 import Control.Monad (forM, replicateM)
 {-# HLINT ignore "Use newtype instead of data" #-}
 import Data.List
+import System.Random
 
 data Board = Board{
     cells::[[Int]],
     max::Int
 } | Empty deriving (Show, Eq)
+
+
 
 
 replaceMatrix::[[Int]] -> Int -> Int -> Int -> [[Int]]
@@ -38,7 +41,7 @@ isValidMovement board cell movement = do
 getAdjacencyList::[[Int]] -> Int -> [(Int, Int)]
 getAdjacencyList board cell = do
     let initialPosition = getIndexMatrix board cell 0
-    let directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+    let directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
     let movements = map (\x -> (fst initialPosition + fst x, snd initialPosition + snd x)) directions 
     let validMovements = filter (\x -> isValidMovement board cell x) movements
     let succesor = filter (\x -> (board !! fst x !! snd x) > 0) validMovements
@@ -106,14 +109,39 @@ solve_once m max cell = do
                 let len = length adj
                 while 0 len [] m max adj cell
 
+while_cu pos len 0 m max adj cell= do
+    if pos == len || result >= 2
+        then result
+    else do
+        let x = adj !! pos
+        let m2 = replaceMatrix m (fst x) (snd x) (cell + 1)
+        while_cu (pos + 1) len (result + (check_uniqueness m2 max (cell + 1))) m max adj cell
 
-proof = do
-  let askName i = do
-      putStrLn $ "What's your name (" ++ (show i) ++ ")"
-      name <- getLine
-      return name
-  results <- forM [1,2,3] askName
-  putStrLn $ "Results = " ++ show results
+check_uniqueness:: [[Int]] -> Int -> Int -> Int
+check_uniqueness m max cell = do
+    let adj = getAdjacencyList m cell
+    if length adj == 0
+        then  if cell == max 
+            then 1
+            else 0
+    else
+        if m !! (fst(adj !! 0)) !! (snd (adj !! 0)) == cell + 1
+            then check_uniqueness m max (cell + 1)
+        else
+            if getIndexMatrix m (cell + 1) 0  /= (-1,-1)
+                then 0
+            else do
+                let len = length adj
+                while_cu 0 len 0 m max adj cell
+
+change_seed :: Int -> Int
+change_seed x = do
+    ((x * 125) + 1) `mod` 4096
+
+randomInRange::Int -> Int -> Int -> Int
+randomInRange l r seed = do
+    l + (seed `mod` (r - l))
+
 
 
 
@@ -124,11 +152,11 @@ proof = do
 --           [14, 1, 2, 5],
 --           [0, 13, 0, 0],
 --           [12, 0, 8, 7]]
-matrix = [[0, 0, 19, 0, 5],
-          [0, 18, 25, 6, 0],
-          [0, 23, 0, 0, 0],
-          [0, 13, 1, 0, 8],
-          [0, 14, 0, 11, 9]]
+-- matrix = [[0, 0, 19, 0, 5],
+--           [0, 18, 25, 6, 0],
+--           [0, 23, 0, 0, 0],
+--           [0, 13, 1, 0, 8],
+--           [0, 14, 0, 11, 9]]
 -- matrix = [[0, 0, 0, 0, 0, 0, 0, 0],
 --           [0, 0, 0, 0, 0, 0, 0, 0],
 --           [0, 0, 0, 0, 0, 0, 0, 0],
@@ -149,8 +177,18 @@ matrix = [[0, 0, 19, 0, 5],
 list = [0, 0, 2, 1]
 
 
+
+    
+
+juan x = do
+    let y = change_seed x
+    let x = y
+
+    print x
+
+main = juan 5
 -- main = print(solve_once matrix 64 1)
-main = print(solve_once matrix 25 1)
+-- main = print(solve_once matrix 25 1)
 -- main = print(replaceMatrix matrix 1 0 7)
 -- main = print(replace list 2 7)
 -- main = proof
