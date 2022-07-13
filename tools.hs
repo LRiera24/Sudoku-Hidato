@@ -142,8 +142,44 @@ randomInRange::Int -> Int -> Int -> Int
 randomInRange l r seed = do
     l + (seed `mod` (r - l))
 
+while1 :: (a -> Bool) -> (a -> a) -> a
+while1 g f x | g(x) == False = x
+            | otherwise = while1 g f f(x)
 
+gen m amountToDel seed = do
+    let r = length m
+    let c = length (m !! 0)
+    let positions = collectAllBlankPositions m r c
+    let max = length positions
 
+    let ((r1,c1), s2) = placeRandom1 m r c seed 1 0 0
+    let seed = s2
+    let m2 = replaceMatrix m r1 c1 1
+    let m = m2
+
+    while1 (>0) (/x -> do
+        
+        
+        ) amountToDel
+
+randomCoordinates r c seed = do
+    let r1 = randomInRange 0 r seed
+    let s2 = change_seed seed
+    let c1 = randomInRange 0 c s2
+    let seed = change_seed s2
+    ((r1,c1), seed)
+
+placeRandom1 m r c seed val r1 c1 | val == 0 = ((r1,c1), seed)
+                                  | otherwise = do 
+                                    let ((r1,c1),s2) = randomCoordinates r c seed
+                                    placeRandom1 m r c s2 (m !! r1 !! c1) r1 c1
+
+collectAllBlankPositions m r c = 
+    [
+        (r1,c1) | r1 <- [0..(r-1)],
+                    c1 <- [0..(c-1)],
+                    m !! r1 !! c1  == 0
+    ]
 
 -- matrix = [[0, 3, 0],
 --           [0, 8, 1],
@@ -176,7 +212,8 @@ matrix = [[0, 25, 0, 0, 3, 0, 6, 0],
 
 
 -- main = juan 5
-main = print(check_uniqueness matrix 64 1)
+main = print(gen matrix 10 414151)
+-- main = print(check_uniqueness matrix 64 1)
 -- main = print(solve_once matrix 25 1)
 -- main = print(replaceMatrix matrix 1 0 7)
 -- main = print(replace list 2 7)
