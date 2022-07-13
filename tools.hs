@@ -4,7 +4,7 @@
 import Control.Monad (forM, replicateM)
 {-# HLINT ignore "Use newtype instead of data" #-}
 import Data.List
-import System.Random
+-- import System.Random
 
 data Board = Board{
     cells::[[Int]],
@@ -109,7 +109,7 @@ solve_once m max cell = do
                 let len = length adj
                 while 0 len [] m max adj cell
 
-while_cu pos len 0 m max adj cell= do
+while_cu pos len result m max adj cell= do
     if pos == len || result >= 2
         then result
     else do
@@ -165,29 +165,18 @@ randomInRange l r seed = do
 --           [0, 0, 0, 0, 0, 0, 0, 0],
 --           [0, 0, 0, 0, 0, 0, 0, 0],
 --           [0, 0, 0, 0, 0, 0, 0, 0]]
--- matrix = [[0, 25, 0, 0, 3, 0, 6, 0],
---           [23, 0, 21, 0, 0, 0, 0, 0],
---           [38, 0, 29, 0, 31, 11, 1, 9],
---           [0, 39, 35, 30, 19, 32, 0, 14],
---           [49, 0, 0, 34, 0, 18, 15, 0],
---           [0, 48, 52, 41, 0, -1, 0, 16],
---           [47, 45, 0, 53, 63, 55, 56, 0],
---           [0, 44, 43, 0, 61, 60, 59, 58]]
-
-list = [0, 0, 2, 1]
+matrix = [[0, 25, 0, 0, 3, 0, 6, 0],
+          [23, 0, 21, 0, 0, 0, 0, 0],
+          [38, 0, 29, 0, 31, 11, 1, 9],
+          [0, 39, 35, 30, 19, 32, 0, 14],
+          [49, 0, 0, 34, 0, 18, 15, 0],
+          [0, 48, 52, 41, 0, 64, 0, 16],
+          [47, 45, 0, 53, 63, 55, 56, 0],
+          [0, 44, 43, 0, 61, 60, 59, 58]]
 
 
-
-    
-
-juan x = do
-    let y = change_seed x
-    let x = y
-
-    print x
-
-main = juan 5
--- main = print(solve_once matrix 64 1)
+-- main = juan 5
+main = print(check_uniqueness matrix 64 1)
 -- main = print(solve_once matrix 25 1)
 -- main = print(replaceMatrix matrix 1 0 7)
 -- main = print(replace list 2 7)
