@@ -1,9 +1,23 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-{-# HLINT ignore "Redundant if" #-}
+module Generator(
+placeRandom1
+,gen
+,collectAllBlankPositions
+,randomCoordinates
+,takeRandomFromPositions
+,whileDelete
+,calculateMax
+,getLine
+)
+where
+
+
 import Control.Monad (forM, replicateM)
-{-# HLINT ignore "Use newtype instead of data" #-}
 import Data.List
+-- {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+-- {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+-- {-# HLINT ignore "Redundant if" #-}
+-- {-# HLINT ignore "Use newtype instead of data" #-}
+
 
 import Tools
 import Solver
@@ -18,6 +32,12 @@ placeRandom1 m r c seed val r1 c1 | val == 0 = ((r1,c1), seed)
                                   | otherwise = do 
                                     let ((r1,c1),s2) = randomCoordinates r c seed
                                     placeRandom1 m r c s2 (m !! r1 !! c1) r1 c1
+collectAllNonObstaclesPositions m r c = 
+    [
+        (r1,c1) | r1 <- [0..(r-1)],
+                    c1 <- [0..(c-1)],
+                    m !! r1 !! c1  /= -1
+    ]
 
 collectAllBlankPositions m r c = 
     [
@@ -56,7 +76,14 @@ whileDelete positions m2 max seed amountToDel
                 then whileDelete positions2 m2 max s2 amountToDel
             else whileDelete positions2 m3 max s2 (amountToDel - 1)
     | otherwise = (m2, seed)
-        
+
+calculateMax m = do
+    let r = length m
+    let c = length (m !! 0)
+    let positions = collectAllNonObstaclesPositions m r c
+    let max = length positions
+    max
+
 gen m amountToDel seed = do
     let r = length m
     let c = length (m !! 0)
@@ -86,14 +113,14 @@ gen m amountToDel seed = do
 --           [0, 23, 0, 0, 0],
 --           [0, 13, 1, 0, 8],
 --           [0, 14, 0, 11, 9]]
-matrix = [[0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0]]
+-- matrix = [[0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0],
+--           [0, 0, 0, 0, 0, 0, 0, 0]]
 -- matrix = [[0, 25, 0, 0, 3, 0, 6, 0],
 --           [23, 0, 21, 0, 0, 0, 0, 0],
 --           [38, 0, 29, 0, 31, 11, 1, 9],
@@ -102,13 +129,18 @@ matrix = [[0, 0, 0, 0, 0, 0, 0, 0],
 --           [0, 48, 52, 41, 0, 64, 0, 16],
 --           [47, 45, 0, 53, 63, 55, 56, 0],
 --           [0, 44, 43, 0, 61, 60, 59, 58]]
-printRow matrix pos | pos < length matrix = do 
-    print (matrix !! pos)
-    printRow matrix (pos + 1)
-    | otherwise = print " "
-printMatrix matrix = do printRow matrix 0
+matrix = [[0, -1, -1, -1, -1, -1, 0],
+          [0, 0, -1, -1, -1, 0, 0],
+          [0, 0, 0, -1, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [-1, 0, 0, 0, 0, 0, -1],
+          [-1, -1, 0, 0, 0, -1, -1],
+          [-1, -1, -1, 0, -1, -1, -1]]
+
 -- main = juan 5
-main = printMatrix(gen matrix 100 53153)
+main = printMatrix(matrix)
+-- main = printMatrix(gen matrix 100 53153)
 -- main = print(gen matrix 10 414151)
 -- main = print(check_uniqueness matrix 64 1)
 -- main = print(solve_once matrix 25 1)

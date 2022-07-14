@@ -8,9 +8,18 @@ replaceMatrix
 ,change_seed
 ,randomInRange
 ,isValidMovement
+,printMatrix
 )
 where
 
+printRow matrix pos | pos < length matrix = do 
+    let row = matrix !! pos
+    let rowStr = foldl (\acc x -> do if x == (-1) then acc ++ "   " else if x >= 10 then acc ++(show x) ++ " " else acc  ++ " " ++ (show x)++ " " ) "" row
+    putStrLn rowStr
+    printRow matrix (pos + 1)
+    | otherwise = putStrLn " "
+
+printMatrix matrix = do printRow matrix 0
 
 replaceMatrix::[[Int]] -> Int -> Int -> Int -> [[Int]]
 replaceMatrix m posx posy value = do
