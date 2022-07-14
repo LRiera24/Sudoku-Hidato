@@ -13,10 +13,6 @@ where
 
 import Control.Monad (forM, replicateM)
 import Data.List
--- {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
--- {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
--- {-# HLINT ignore "Redundant if" #-}
--- {-# HLINT ignore "Use newtype instead of data" #-}
 
 
 import Tools
@@ -98,55 +94,3 @@ gen m amountToDel seed = do
     let m2 = solve_once m max 1
     let (m3, s2) = whileDelete positions m2 max seed amountToDel
     m3
-
-
-
--- matrix = [[0, 3, 0],
---           [0, 8, 1],
---           [7, 0, 9]]
--- matrix = [[15, 16, 0, 3],
---           [14, 1, 2, 5],
---           [0, 13, 0, 0],
---           [12, 0, 8, 7]]
--- matrix = [[0, 0, 19, 0, 5],
---           [0, 18, 25, 6, 0],
---           [0, 23, 0, 0, 0],
---           [0, 13, 1, 0, 8],
---           [0, 14, 0, 11, 9]]
--- matrix = [[0, 0, 0, 0, 0, 0, 0, 0],
---           [0, 0, 0, 0, 0, 0, 0, 0],
---           [0, 0, 0, 0, 0, 0, 0, 0],
---           [0, 0, 0, 0, 0, 0, 0, 0],
---           [0, 0, 0, 0, 0, 0, 0, 0],
---           [0, 0, 0, 0, 0, 0, 0, 0],
---           [0, 0, 0, 0, 0, 0, 0, 0],
---           [0, 0, 0, 0, 0, 0, 0, 0]]
--- matrix = [[0, 25, 0, 0, 3, 0, 6, 0],
---           [23, 0, 21, 0, 0, 0, 0, 0],
---           [38, 0, 29, 0, 31, 11, 1, 9],
---           [0, 39, 35, 30, 19, 32, 0, 14],
---           [49, 0, 0, 34, 0, 18, 15, 0],
---           [0, 48, 52, 41, 0, 64, 0, 16],
---           [47, 45, 0, 53, 63, 55, 56, 0],
---           [0, 44, 43, 0, 61, 60, 59, 58]]
-matrix = [[0, -1, -1, -1, -1, -1, 0],
-          [0, 0, -1, -1, -1, 0, 0],
-          [0, 0, 0, -1, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
-          [-1, 0, 0, 0, 0, 0, -1],
-          [-1, -1, 0, 0, 0, -1, -1],
-          [-1, -1, -1, 0, -1, -1, -1]]
-
--- main = juan 5
-main = printMatrix(matrix)
--- main = printMatrix(gen matrix 100 53153)
--- main = print(gen matrix 10 414151)
--- main = print(check_uniqueness matrix 64 1)
--- main = print(solve_once matrix 25 1)
--- main = print(replaceMatrix matrix 1 0 7)
--- main = print(replace list 2 7)
--- main = proof
-
--- main = do
---     print(getAdjacencyList list 1)

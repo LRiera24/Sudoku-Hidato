@@ -99,22 +99,6 @@ def GenerateRandomSolution(matrix, max, cell):
             matrix[x][y] = 0
         return []
 
-matrix = [[0, -1, -1, -1, -1, -1, 0],
-          [0, 0, -1, -1, -1, 0, 0],
-          [0, 0, 0, -1, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
-          [-1, 0, 0, 0, 0, 0, -1],
-          [-1, -1, 0, 0, 0, -1, -1],
-          [-1, -1, -1, 0, -1, -1, -1]]
-
-matrix = [[0,0,0,0, 0, 0],
-          [0,0,0,0, 0, 0],
-          [0,0,0,0, 0, 0],
-          [0,0,0,0, 0, 0],
-          [0,0,0,0, 0, 0],
-          [0,0,0,0, 0, 0],
-         [0,0,0,0, 0, 0]]
 
 def toPrint(matrix):
     dup = []
@@ -125,6 +109,3 @@ def toPrint(matrix):
             if dup[r][c] == -1:
                 dup[r][c] = '.'
     return dup
-
-print(np.matrix(gen(matrix, 100)))
-# print(np.matrix(toPrint(matrix)))

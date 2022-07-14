@@ -4,8 +4,6 @@ import Solver
 import Generator
 import Tools
 
--- let numbs = map (\s -> read s :: Int) (words line) 
-
 main = do
     putStrLn "Hello. Ready to play Hidato?"
     putStrLn "Select on of the options below by typing the corresponding number and pressing enter."
