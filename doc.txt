@@ -1,0 +1,73 @@
+Ejecucion en una terminal:
+
+runghc main.hs
+
+
+main.hs:
+
+Aqui empieza la ejecucion del programa. Esta es interactiva mediante input y output en consola. Presentamos al usuario dos opciones
+1- Crear un hidato nuevo
+2 - Resolver un hidato que ya existe
+
+Para la segunda opcion se piden las dimensiones del hidato primeramente y luego una matriz, con las dimensiones especificadas, que represente el hidato. Esta matriz tiene -1 en las posiciones que no pertenecen al hidato, 0 en los espacios vacios a resolver y los restantes son los numeros fijos.
+
+Para la primera opcion se pide al usuario las dimensiones del menor tablero rectangular en que cabe el hidato a crear. Luego se pide la forma del hidato como una matriz rectangular (con las dimensiones mencionadas) de 0's y (-1)'s donde los -1 representan las casillas del rectangulo que no pertenecen al hidato.
+
+Se pide ademas la dificultad que se quiere del hidato (numero de casillas sin numeros fijados en el hidato), y una semilla para el generador de numeros random.
+
+---------Como tratamos el tema del random:
+
+A traves de todas las funciones que necesitan un random estamos pasando la semilla que recibimos antes por el usuario. A partir de esta semilla se obtiene un numero random en el rango necesitado con solo modular por el valor apropiado (metodo randomInRange en tools.hs). 
+
+Luego cada vez que se usa la semilla, se genera una nueva. Por tanto cada metodo que use un numero random devuelve a su vez la nueva semilla. Asi el metodo padre puede renombrar la nueva semilla como la antigua y seguir usando numeros aleatorios sin problemas ni repeticiones.
+
+El metodo change_seed en tools.hs, usado para generar nuevas semillas, es muy sencillo y fue cogido del libro "Programming In Prolog"
+
+---------tools.hs-------- 
+
+Se podria explicar o no los siguientes:
+-getIndexMatrix
+-getIndexList
+-isValidMovement
+-getAdjacencyList
+-replace
+-replaceMatrix
+-printRow: Imprime una fila de una matriz en un formato agradable a la vista. Luego se llama recursivamente para imprimir las filas subsecuentes de la matriz.
+-printMatrix: Se usa para hacer el primer llamado a printrow
+
+
+--------solver.hs -------
+
+
+Las funciones solve, solve_once y check_uniqueness son 3 variantes del mismo metodo. La primera devuelve todas las matrices soluciones en una lista de estas,la segunda solamente devuelve la primera solucion que se encuentre y la tercera devuelve 0, 1 o 2 indicando que  el hidato tiene 0, 1 o muchas soluciones respectivamente.
+
+El metodo solve es un metodo recusivo que se encarga en cada llamado recursivo de encontar la ubicacion del siguiente numero del hidato, comenzando por 1. Si el numero ya esta en el tablero se procede a buscar el siguiente. Sino, se exploran todos los lugares adyacentes al  ultimo buscado, que sean adecuados para poner el nuevo numero, y se hace otro llamado recursivo para buscar la posicion del siguiente. Si se llega a un llamado en que se desea encontrar el mayor valor del tablero, y este se encuentra, entonces significa que todos los numeros anteriores fueron ubicados satisfactoriamente y estamos en la presencia de una solucion.
+
+Para la parte de explorar todas las posibles soluciones se usa ListComprehension, usando un generador con todas las casillas adyacentes a la del ultimo numero ubicado y otro con todas las soluciones que se obtienen de los llamados recursivos correspondientes a estas casillas. Es la composicion de estos dos geneadores la que nos da la lista final.
+
+En el caso de solve_once y check_uniqueness se remplaza esta ListComprehension por dos metodos while respectivos, ya que en estos casos para optimizar no nos interesa que se recorran todos los casos, sino que se pare en cuanto se tiene una y dos soluciones respectivamente.
+
+
+---------generator.hs------------
+
+La funcion placeRandom1 selecciona una casilla valida y sin numero de una  plantilla de hidato, para colocar el numero 1. Devuelve ademas como todo metodo que usa random's una nueva semilla.
+
+
+La funcion collectAllNonObstaclesPositions devuelve una lista con todas las posiciones diferentes a -1.
+
+La funcion collectAllBlankPositions devuelve todas las casillas validas donde no hay numeros (o sea las que tienen 0).
+
+La funcion genera unas coordenadas random dentro de las dimensiones de una matriz dadas.
+
+La funcion takeRandomFromPositions, dada una lista de positions, (pares ordenados que representan posiciones) toma uno aleatoriamente.
+
+La funcion whileDelete se aplica sobre un hidato resuelto para eliminar aleatoriamente determinada cantidad de numeros, de manera que la solucion que se pueda obtener despues, siga siendo unica. La funcion tiene una guarda, que devuelve el propio hidato si no hay que eliminar ninguna casilla o si la lisa de posiciones posibles a eliminar es vacia. En otro caso se selecciona de la lista de posiciones a eliminar (todas aquellas que aun contengan numeros positivos), una al azar y se elimina de la lista (se crea una nueva lista donde estan todas menos ella).  Luego si la posicion seleccionada tenia un 1 o el valor maximo no se puede eliminar por lo que se vuelve a intentar eliminar posicion. En oto caso se replica la matriz del hidato que se tenia pero esta vez quitando el numero en la posicion en cuestion. Entonces se comprueba la cantidad de soluciones que tiene el nuevo hidato, y si es mayor que 1 se vuelve al hidato anterior y se intenta quitar el numero en otra posicion en su lugar. En el otro caso continuamos con el nuevo hidato eliminando otros numeros mientras haga falta segun la cantidad que se especifico.
+
+Finalmente la funcion gen es muy sencilla habiendo explicado la anterior. Primero se calculan las dimensiones de la matriz. Luego se haya una lista con todas las posiciones que pertenecen al hidato. Se calcula ademas el mayor valor a colocar en el tabler. Luego se escoge una posicion aleatoria para el numero 1. A continuacion se haya una solucion inicial para un hidato con la forma deseada. Finalmente se procede a dejar posiciones vacias en este hidato haciendo uso del metodo whileDelete antes mencionado.
+
+
+El metodo calculateMax simplemente cuenta la cantidad de casillas diferente de -1 en una matriz, ya que asi se sabe cual es el mayor numero a ubicar en el hidato.
+
+
+
+

@@ -73,12 +73,6 @@ whileDelete positions m2 max seed amountToDel
             else whileDelete positions2 m3 max s2 (amountToDel - 1)
     | otherwise = (m2, seed)
 
-calculateMax m = do
-    let r = length m
-    let c = length (m !! 0)
-    let positions = collectAllNonObstaclesPositions m r c
-    let max = length positions
-    max
 
 gen m amountToDel seed = do
     let r = length m
@@ -94,3 +88,10 @@ gen m amountToDel seed = do
     let m2 = solve_once m max 1
     let (m3, s2) = whileDelete positions m2 max seed amountToDel
     m3
+
+calculateMax m = do
+    let r = length m
+    let c = length (m !! 0)
+    let positions = collectAllNonObstaclesPositions m r c
+    let max = length positions
+    max
